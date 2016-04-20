@@ -56,19 +56,19 @@ def rdt_send(serverip,serverport,filetotransfer):
 				msg2send=datapacket(seq_to_send)
 				
 				if not msg2send:
-					print "msg2send empty"
+					
 					if(filesendcheck):
-						print "tg"
+					
 						filesendcheck=False
 						msg2send=header2send1(seq_to_send,'END')
 						msg2send+="END"
 
 						
 					elif len(buf_send_seq)==0 :
-						print "breaking"
+						
 						break
 					else:
-						print "gen_check" 
+						
 						generalcheck=True
 
 
@@ -85,6 +85,7 @@ def rdt_send(serverip,serverport,filetotransfer):
 				
 
 			if(expired_time==True) and len(buf_send)>0:
+					print "Time out,sequence number="+str(buf_send_seq[0]*mss)
 					lock.acquire()
 					time_thread.cancel()
 					lock.release()
@@ -154,7 +155,7 @@ def ackrecv():
 						print "Indicatio not matched"
 
 
-		print "thread chal gaya"
+		print "Acknowledgement thread ended"
 
 
 def timerthread():
@@ -168,7 +169,7 @@ stopcheck = True
 buf_send= []
 buf_send_seq = []
 expired_time = False
-set_timer = 0.1
+set_timer = 0.5
 
 serverip=str(sys.argv[1])
 serverport=int(sys.argv[2])

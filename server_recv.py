@@ -16,6 +16,7 @@ def rdt_recv(s,p):
 	old_seq_norecv=-1
 	recv_buffer=""
 	s.settimeout(2)
+	filesave=open(filename,'wb')
 
 	while True:
 		try:
@@ -32,7 +33,7 @@ def rdt_recv(s,p):
 			mss=len(maindata)-64
 			initstart=0
 
-		randint=random.random()
+		randint=random.uniform(0,1)
 
 		if randint<=p:
 			if old_seq_norecv!=last_seq_norecv:
@@ -50,8 +51,8 @@ def rdt_recv(s,p):
 		if errno==0:
 			if seq_no==last_seq_norecv+1:
 				last_seq_norecv=seq_no
-				print dataText
-				recv_buffer+=dataText
+				filesave.write(dataText)
+				
 				
 			msg2reply=header2send2(last_seq_norecv+1,'')
 			s.sendto(msg2reply,addr)
@@ -71,12 +72,13 @@ def rdt_recv(s,p):
 			s.sendto(msg2reply,addr)
 			if maxseqno==last_seq_norecv:
 				print "Process Completed"
+				print "Last sequence is sent, seq sent="+str((last_seq_norecv+1)*mss)
 				break
 
 	print "File write completed"
 	
-	filesave=open(filename,'wb')
-	filesave.write(recv_buffer)
+	
+
 	filesave.close()
 	
 	sys.exit(0)
@@ -88,5 +90,5 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 port=int(sys.argv[1])
 filename=str(sys.argv[2])
 s.bind(('',port))
-p=int(sys.argv[3])
+p=float(sys.argv[3])
 rdt_recv(s,p)
