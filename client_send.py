@@ -6,12 +6,17 @@ import math
 from clientdef import *
 
 
-def datapacket(seqtosend,data):
+def datapacket(seqtosend):
 	global mss
-	
-	index=seqtosend*mss
+	global filetotransfer
 
-	contenttosend=data[index:index+mss]
+	filetosend=open(filetotransfer,'rb')
+	
+
+	index=seqtosend*mss
+	filetosend.seek(index)
+	contenttosend=filetosend.read(mss)
+	filetosend.close()
 	if not contenttosend :
 			#print "No content"
 			return None
@@ -36,9 +41,6 @@ def rdt_send(serverip,serverport,filetotransfer):
 
 
 
-	filetosend=open(filetotransfer,'rb')
-	completefile=filetosend.read()
-	filetosend.close()
 	time_thread=threading.Timer(set_timer,timerthread)
 	time_thread.start()
 	filesendcheck=True
@@ -51,7 +53,7 @@ def rdt_send(serverip,serverport,filetotransfer):
 			   
 
 			if(windowsize>len(buf_send_seq)):
-				msg2send=datapacket(seq_to_send,completefile)
+				msg2send=datapacket(seq_to_send)
 				
 				if not msg2send:
 					print "msg2send empty"
@@ -197,5 +199,5 @@ print "Time taken:"+str(time.time()-start_time)
 print "finished"
 stopcheck=False
 ackthread.join()
-s.close()
+
 
