@@ -8,6 +8,7 @@ from serverdef import *
 
 
 def rdt_recv(s,p):
+	global filename
 	last_seq_norecv=-1
 	maxseqno=-1
 	initstart=1
@@ -74,7 +75,7 @@ def rdt_recv(s,p):
 
 	print "File write completed"
 	
-	filesave=open("123.txt",'wb')
+	filesave=open(filename,'wb')
 	filesave.write(recv_buffer)
 	filesave.close()
 	
@@ -84,7 +85,8 @@ os.system('fuser -k 7735/tcp')
 s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 servername=socket.gethostbyname(socket.gethostname())
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-port=7735
+port=int(sys.argv[1])
+filename=str(sys.argv[2])
 s.bind(('',port))
-p=0.05
+p=int(sys.argv[3])
 rdt_recv(s,p)
