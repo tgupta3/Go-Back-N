@@ -73,7 +73,7 @@ def rdt_recv(s,p):
 				break
 
 	print "File write completed"
-	s.close()
+	
 	filesave=open("123.txt",'wb')
 	filesave.write(recv_buffer)
 	filesave.close()
